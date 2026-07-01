@@ -1,0 +1,96 @@
+<!Doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FCM Token Tester</title>
+  </head>
+  <body>
+    <h2>Firebase Push Notification - Backend Testing</h2>
+    <button id="btn-token">1. Get Token & Save to DB</button>
+    <p>
+      <strong>Status:</strong>
+      <span id="status">Click the button to start...</span>
+    </p>
+    <p><strong>Token:</strong></p>
+    <textarea id="token-box" rows="5" cols="60" readonly></textarea>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import {
+        getMessaging,
+        getToken,
+      } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAXEbSiNSrdVtcFNopn_YPrL0MNXRp4Oqk",
+        authDomain: "pushnotification-4de58.firebaseapp.com",
+        projectId: "pushnotification-4de58",
+        storageBucket: "pushnotification-4de58.firebasestorage.app",
+        messagingSenderId: "492098009563",
+        appId: "1:492098009563:web:23fac7670072e4b869cffe",
+        measurementId: "G-QCEDTTBR9C",
+      };
+      const app = initializeApp(firebaseConfig);
+      const messaging = getMessaging(app);
+
+      document
+        .getElementById("btn-token")
+        .addEventListener("click", async () => {
+          const statusEl = document.getElementById("status");
+          const tokenBox = document.getElementById("token-box");
+
+          statusEl.innerText = "Requesting permission...";
+
+          try {
+            // 2. Notification Permission maango
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+              statusEl.innerText =
+                "Permission Denied! Reset site permissions in browser settings.";
+              return;
+            }
+
+            statusEl.innerText = "Generating token...";
+
+            // 3. FCM Token lo (Yahan apni real VAPID key dalo)
+            const currentToken = await getToken(messaging, {
+              vapidKey: "BI1C6-rQPFfb1tF9xslsDe8GpyS5bg_voz12JzXgDUcz68lPwMRmZI9hHlSNm9H-m5qZYJO6Cfyh0yydZb1Zf8Y"
+            });
+
+            if (currentToken) {
+              tokenBox.value = currentToken;
+              statusEl.innerText = "Sending token to Node.js Backend...";
+
+              // 4. Apne Node.js backend API ko hit karo
+              const response = await fetch(
+                "http://localhost:8011/api/admin/tokens/save",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    userId: 999, // Dummy user ID testing ke liye
+                    token: currentToken,
+                    deviceType: "web",
+                  }),
+                },
+              );
+
+              const resData = await response.json();
+              if (response.ok) {
+                statusEl.innerText = "Success! Token saved in MySQL Database.";
+              } else {
+                statusEl.innerText = "Backend Error: " + resData.error;
+              }
+            } else {
+              statusEl.innerText =
+                "No registration token available. Check console.";
+            }
+          } catch (err) {
+            console.error(err);
+            statusEl.innerText = "Error: " + err.message;
+          }
+        });
+    </script>
+  </body>
+</html>
