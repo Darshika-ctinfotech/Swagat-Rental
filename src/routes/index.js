@@ -15,6 +15,7 @@ import leadsRoutes from "../modules/leads/leads.route.js";
 import commissionRoutes from "../modules/commissions/commissions.route.js";
 import systemCostQuoteRoutes from "../modules/systemCostQuote/systemCostQuote.route.js";
 import birthdayRoutes from "../modules/birthday/birthday.route.js"
+import analyticsRoutes from "../modules/dashBoard/admin.dashBoard.routes.js";
 // import chatRoutes from "../modules/chat/chat.route.js";
 
 const router = Router();
@@ -34,6 +35,7 @@ router.use("/commissions", commissionRoutes);
 router.use("/system-cost-quotes", systemCostQuoteRoutes);
 router.use("/", systemRoutes);
 router.use('/birthday', birthdayRoutes)
+router.use("/analytics", analyticsRoutes);
 // router.use("/chat", chatRoutes);
 
 

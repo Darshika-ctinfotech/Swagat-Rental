@@ -4,7 +4,7 @@ import { checkAndNotifyAgreementStatus } from "../modules/admin/admin.service.js
 export const initAgreementStatusCron = () => {
   // every 15 minutes — adjust as needed
   //cron.schedule("*/15 * * * *", async () => {
-      cron.schedule("*/60 * * * * *", async () => {
+      cron.schedule("*/15 * * * *", async () => {
     console.log("[Cron] Checking agreement status changes...");
     try {
       const result = await checkAndNotifyAgreementStatus();
