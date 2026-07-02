@@ -150,7 +150,6 @@ http://localhost:5000/api
 | `check_user_online` | Check one user online status |
 | `story_view` | Realtime story view action |
 | `story_reply` | Reply to story as direct message |
-
 ### Server -> Client
 
 | Event | Purpose |

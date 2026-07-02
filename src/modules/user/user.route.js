@@ -21,7 +21,6 @@ import { handleValidationErrors } from "../../middlewares/validation.middleware.
 import { createPaymentValidation, updateProfileValidation } from "./user.validation.js";
 import { changePasswordValidation } from "../admin/admin.validation.js";
 
-import { sendBirthdayMails } from "../birthday/birthday.controller.js";
 const router = Router();
 const KYC_UPLOAD_FIELDS = [
   { name: "aadhaar_card", maxCount: 10 },

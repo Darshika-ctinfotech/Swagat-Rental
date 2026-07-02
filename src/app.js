@@ -47,11 +47,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/api", routes);
-/**
- * 💾 CLIENT TOKEN SAVE ENDPOINT
- * URL: http://localhost:8011/api/tokens/save
- * Method: POST
- */
+//for creating fcm_token 
+//Temprorary route for saving FCM token in clients table
 app.post("/api/tokens/save", async (req, res) => {
   const { userId, token } = req.body;
 
@@ -60,18 +57,15 @@ app.post("/api/tokens/save", async (req, res) => {
   }
 
   try {
-    // 💡 Kyunki abhi aap sirf manual testing kar rahe hain, hum clients table mein 
-    // id = 1 (ya jo bhi aapki table mein pehli row ho) par token update kar dete hain.
+  
     const query = `
       UPDATE clients 
       SET fcm_token = ? 
       WHERE id = 1; 
     `;
-
-    // Database mein execute karein
     const [result] = await pool.query(query, [token]);
 
-    console.log("💾 Real Browser Token MySQL Database mein save ho gaya hai!");
+    console.log("TOKEN IS SAVED IN CLIENTS TABLE:", result);
 
     return res.status(200).json({ 
       success: true, 
@@ -80,7 +74,7 @@ app.post("/api/tokens/save", async (req, res) => {
 
   } catch (error) {
     console.error("❌ Database error while saving token:", error);
-    return res.status(500).json({ success: false, error: "Database internal error." });
+    return res.status(500).json({ success: false, error: "Database Internal error." });
   }
 });
 app.get("/", (req, res) => {
